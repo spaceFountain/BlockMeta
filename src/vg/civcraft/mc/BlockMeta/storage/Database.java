@@ -3,10 +3,7 @@ package vg.civcraft.mc.BlockMeta.storage;
 import com.mysql.jdbc.Driver;
 import org.bukkit.Location;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 
 /**
  * Created by isaac on 2/17/2015.
@@ -42,15 +39,14 @@ public class Database {
     private void genTable() {
         try {
             connection.nativeSQL("CREATE TABLE " + META_TABLE + " IF NOT EXISTS (" +
-                            "meta varchar(256)," +
-                            "world_id char(36)," +
+                            "meta varchar(256)," + // a string up to 256 chars long that a plugin can store data too
+                            "world_id char(36)," + // the UUID for the world in which the block is stored.
                             "x int," +
                             "y int," +
                             "z int," +
-                            "chunk_x int not null," +
-                            "chunk_z int not null," +
-                            "primary key (world_id, x, y, z)" +
-                            "key (chunk_x, chunk_z))");
+                            "chunk_x int not null," + //the chunk x cord for the chunk the block is in. Todo add lookup by chunk
+                            "chunk_z int not null," + //the chunk y cord for the chunk the block is in.
+                            "primary key (world_id, x, y, z))"); //because we are looking up by location this is the best way
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -81,14 +77,14 @@ public class Database {
             addMeta = connection.prepareCall("INSERT INTO " + META_TABLE
                                             +" VALUES (?, ?, ?, ?, ?, ?, ?)");
 
-            getMeta = connection.prepareCall("SELECT FROM" + META_TABLE + " " +
-                                             "WHERE world_id=? AND " +
+            getMeta = connection.prepareCall("SELECT FROM " + META_TABLE +
+                                             " WHERE world_id=? AND " +
                                              "x=? AND " +
                                              "y=? AND " +
                                              "z=?");
 
-            deleteMeta = connection.prepareCall("DELETE FROM" + META_TABLE + " " +
-                                                "WHERE world_id=? AND " +
+            deleteMeta = connection.prepareCall("DELETE FROM " + META_TABLE +
+                                                " WHERE world_id=? AND " +
                                                 "x=? AND " +
                                                 "y=? AND " +
                                                 "z=?");
@@ -119,6 +115,23 @@ public class Database {
         connect();
         setPreparedStatements();
         try {
+            getMeta.setString(1, location.getWorld().getUID().toString());
+            getMeta.setInt(2, location.getBlockX());
+            getMeta.setInt(3, location.getBlockY());
+            getMeta.setInt(4, location.getBlockZ());
+            ResultSet result = getMeta.executeQuery();
+
+            return result.getString("meta");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void deleteMetaForLocation(Location location){
+        connect();
+        setPreparedStatements();
+        try {
             deleteMeta.setString(1, location.getWorld().getUID().toString());
             deleteMeta.setInt(2, location.getBlockX());
             deleteMeta.setInt(3, location.getBlockY());
@@ -127,6 +140,5 @@ public class Database {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
     }
 }

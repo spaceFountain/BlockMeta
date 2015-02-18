@@ -1,0 +1,3 @@
+name: BlockMeta
+version: 0.0.1
+main: vg.civcraft.mc.BlockMeta.BlockMetaPlugin
