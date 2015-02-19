@@ -25,13 +25,17 @@ public class BlockMetaPlugin extends JavaPlugin {
         config = getConfig();
         config.options().copyDefaults(true);
 
-        try {
-            config.load(new File(getDataFolder()+File.pathSeparator + "config.yml"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InvalidConfigurationException e) {
-            e.printStackTrace();
+        File file = new File(getDataFolder()+File.pathSeparator + "config.yml");
+        if (file.exists()) {
+            try {
+                config.load(new File(getDataFolder() + File.pathSeparator + "config.yml"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InvalidConfigurationException e) {
+                e.printStackTrace();
+            }
         }
+        saveConfig();
 
         logger = getLogger();
         db = new Database(config.getString("mysql.url","localhost:3306"),
@@ -40,6 +44,10 @@ public class BlockMetaPlugin extends JavaPlugin {
                 config.getString("mysql.user", ""),
                 config.getString("mysql.password", ""));
         manager = new BlockMetaManager();
+    }
+
+    @Override
+    public void onEnable() {
         Bukkit.getPluginManager().registerEvents(manager, this);
     }
 

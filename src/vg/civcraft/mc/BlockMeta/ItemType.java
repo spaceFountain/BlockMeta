@@ -3,17 +3,19 @@ package vg.civcraft.mc.BlockMeta;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import java.io.Serializable;
+
 /**
  * Created by isaac on 2/15/15.
  */
-public class ItemType {
-    private int type;
+public class ItemType implements Serializable {
+    private Material type;
     private short damage;
     private String lore;
 
 
     public ItemType(Material type, short damage, String lore) {
-        this.type = type.getId();
+        this.type = type;
         this.damage = damage;
         this.lore = lore;
     }
@@ -29,8 +31,26 @@ public class ItemType {
             lore = loreBuilder.toString();
         }
 
-        this.type = item.getType().getId();
+        this.type = item.getType();
         this.damage = item.getDurability();
         this.lore = lore;
+    }
+
+    public String toString() {
+        return String.format("type %s with data %d  and lore \"%s\"", type.toString(), damage, lore);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof ItemType){
+            ItemType other = (ItemType) obj;
+            return other.lore == lore && other.type == type && other.damage == damage;
+        }
+        return super.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return 1;
     }
 }

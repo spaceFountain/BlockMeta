@@ -1,0 +1,6 @@
+mysql:
+  url: "localhost:3306"
+  db: "bukkit"
+  prefix: ""
+  user: "root"
+  password: ""

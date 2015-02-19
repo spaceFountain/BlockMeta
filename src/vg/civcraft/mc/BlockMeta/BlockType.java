@@ -3,10 +3,12 @@ package vg.civcraft.mc.BlockMeta;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
+import java.io.Serializable;
+
 /**
  * Created by isaac on 2/15/15.
  */
-public class BlockType {
+public class BlockType implements Serializable{
     private String meta;
     private Material type;
     private byte data;
@@ -22,6 +24,13 @@ public class BlockType {
         this.type = block.getType();
         this.data = block.getData();
     }
+
+    public BlockType(Material type) {
+        this.meta = null;
+        this.type = type;
+        this.data = 0;
+    }
+
 
     public String getMeta() {
         return meta;
@@ -40,6 +49,11 @@ public class BlockType {
         block.setData(data);
 
         BlockMetaPlugin.db.deleteMetaForLocation(block.getLocation());
-        BlockMetaPlugin.db.insertBlock(block.getLocation(), meta);
+        if (meta != null && meta != "")
+            BlockMetaPlugin.db.insertBlock(block.getLocation(), meta);
+    }
+
+    public String toString() {
+        return String.format("type %s with data %d and meta \"%s\"", type.toString(), data, meta);
     }
 }

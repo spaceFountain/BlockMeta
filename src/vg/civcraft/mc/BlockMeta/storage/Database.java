@@ -38,7 +38,7 @@ public class Database {
 
     private void genTable() {
         try {
-            connection.nativeSQL("CREATE TABLE " + META_TABLE + " IF NOT EXISTS (" +
+            connection.prepareStatement(("CREATE TABLE IF NOT EXISTS " + META_TABLE + " (" +
                             "meta varchar(256)," + // a string up to 256 chars long that a plugin can store data too
                             "world_id char(36)," + // the UUID for the world in which the block is stored.
                             "x int," +
@@ -46,7 +46,8 @@ public class Database {
                             "z int," +
                             "chunk_x int not null," + //the chunk x cord for the chunk the block is in. Todo add lookup by chunk
                             "chunk_z int not null," + //the chunk y cord for the chunk the block is in.
-                            "primary key (world_id, x, y, z))"); //because we are looking up by location this is the best way
+                            "primary key (world_id, x, y, z))")) //because we are looking up by location this is the best way
+                            .executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -64,7 +65,7 @@ public class Database {
         }
 
         try {
-            connection = DriverManager.getConnection(String.format("jdbc:mysql://%s?user=%s&password=%s",url, db, user, password));
+            connection = DriverManager.getConnection(String.format("jdbc:mysql://%s/%s?user=%s&password=%s",url, db, user, password));
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -95,6 +96,8 @@ public class Database {
 
 
     public void insertBlock(Location location, String meta) {
+        if (meta == null)
+            return;
         connect();
         setPreparedStatements();
         try {
