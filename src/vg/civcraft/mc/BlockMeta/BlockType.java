@@ -26,7 +26,7 @@ public class BlockType implements Serializable{
     }
 
     public BlockType(Material type) {
-        this.meta = null;
+        this.meta = "";
         this.type = type;
         this.data = 0;
     }
@@ -51,6 +51,16 @@ public class BlockType implements Serializable{
         BlockMetaPlugin.db.deleteMetaForLocation(block.getLocation());
         if (meta != null && meta != "")
             BlockMetaPlugin.db.insertBlock(block.getLocation(), meta);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof BlockType){
+            BlockType other = (BlockType) obj;
+            return other.getMeta() == getMeta() && getType() == getType() && getData() == getData();
+        }
+
+        return super.equals(obj);
     }
 
     public String toString() {

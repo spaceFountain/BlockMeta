@@ -78,7 +78,7 @@ public class Database {
             addMeta = connection.prepareCall("INSERT INTO " + META_TABLE
                                             +" VALUES (?, ?, ?, ?, ?, ?, ?)");
 
-            getMeta = connection.prepareCall("SELECT FROM " + META_TABLE +
+            getMeta = connection.prepareCall("SELECT meta FROM " + META_TABLE +
                                              " WHERE world_id=? AND " +
                                              "x=? AND " +
                                              "y=? AND " +
@@ -123,12 +123,18 @@ public class Database {
             getMeta.setInt(3, location.getBlockY());
             getMeta.setInt(4, location.getBlockZ());
             ResultSet result = getMeta.executeQuery();
+            if (!result.next())
+                return "";
+            String meta = result.getString("meta");
 
-            return result.getString("meta");
+            if (meta == null)
+                return "";
+            else
+                return meta;
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return "";
     }
 
     public void deleteMetaForLocation(Location location){
