@@ -1,5 +1,6 @@
 package vg.civcraft.mc.BlockMeta;
 
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -24,6 +25,9 @@ public class BlockMetaManager implements Listener{
 
     public BlockType getBlockForItem(ItemType item) {
         return registry.get(item);
+    }
+    public void onBlockBreak(Location location) {
+        BlockMetaPlugin.db.deleteMetaForLocation(location);
     }
 
     @EventHandler(priority=EventPriority.LOWEST)

@@ -13,7 +13,7 @@ public class BlockType implements Serializable{
     private Material type;
     private byte data;
 
-    public BlockType(String meta, Material type, byte data) {
+    public BlockType(Material type, byte data, String meta) {
         this.meta = meta;
         this.type = type;
         this.data = data;
@@ -21,6 +21,7 @@ public class BlockType implements Serializable{
 
     public BlockType(Block block) {
         this.meta = BlockMetaPlugin.db.getMetaForLocation(block.getLocation());
+        BlockMetaPlugin.logger.info("meta was "+meta);
         this.type = block.getType();
         this.data = block.getData();
     }
@@ -49,15 +50,17 @@ public class BlockType implements Serializable{
         block.setData(data);
 
         BlockMetaPlugin.db.deleteMetaForLocation(block.getLocation());
-        if (meta != null && meta != "")
+        if (meta != null && meta != "") {
+            BlockMetaPlugin.logger.info("added meta at "+block.getLocation());
             BlockMetaPlugin.db.insertBlock(block.getLocation(), meta);
+        }
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof BlockType){
             BlockType other = (BlockType) obj;
-            return other.getMeta() == getMeta() && getType() == getType() && getData() == getData();
+            return other.getMeta().equals(getMeta()) && getType() == getType() && getData() == getData();
         }
 
         return super.equals(obj);

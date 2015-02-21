@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 public class BlockMetaPlugin extends JavaPlugin {
     protected static Database db;
     protected static BlockMetaManager manager;
-    protected static Logger logger;
+    public static Logger logger;
 
     private FileConfiguration config;
 

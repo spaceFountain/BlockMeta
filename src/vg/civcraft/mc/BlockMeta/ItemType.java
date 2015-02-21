@@ -45,7 +45,7 @@ public class ItemType implements Serializable {
         if (obj instanceof ItemType){
             BlockMetaPlugin.logger.info("checking if they equal");
             ItemType other = (ItemType) obj;
-            return other.lore == lore && other.type == type && other.damage == damage;
+            return other.lore.equals(lore) && other.type == type && other.damage == damage;
         }
         return super.equals(obj);
     }

@@ -2,6 +2,7 @@ package vg.civcraft.mc.BlockMeta.storage;
 
 import com.mysql.jdbc.Driver;
 import org.bukkit.Location;
+import vg.civcraft.mc.BlockMeta.BlockMetaPlugin;
 
 import java.sql.*;
 
@@ -108,7 +109,7 @@ public class Database {
             addMeta.setInt(5, location.getBlockZ());
             addMeta.setInt(6, location.getChunk().getX());
             addMeta.setInt(7, location.getChunk().getZ());
-            addMeta.execute();
+            addMeta.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -141,11 +142,13 @@ public class Database {
         connect();
         setPreparedStatements();
         try {
+            BlockMetaPlugin.logger.info("deleting meta for location " + location);
             deleteMeta.setString(1, location.getWorld().getUID().toString());
             deleteMeta.setInt(2, location.getBlockX());
             deleteMeta.setInt(3, location.getBlockY());
             deleteMeta.setInt(4, location.getBlockZ());
-            deleteMeta.execute();
+            BlockMetaPlugin.logger.info("with meta" + deleteMeta.toString());
+            deleteMeta.executeUpdate() ;
         } catch (SQLException e) {
             e.printStackTrace();
         }
